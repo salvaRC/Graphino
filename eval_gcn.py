@@ -153,7 +153,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--ID", default='', type=str)
     parser.add_argument("--gpu_id", default=2, type=int)
-    parser.add_argument("--horizon", default=23, type=int)
+    parser.add_argument("--horizon", default=6, type=int)  # number of lead months
     parser.add_argument("--type", default='50ep', type=str)
     parser.add_argument("--data_dir", default='./Data/', type=str)
     args = parser.parse_args()
