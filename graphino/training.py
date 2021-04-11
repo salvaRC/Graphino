@@ -8,7 +8,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
-from evaluation.eval import evaluate_preds
+from eval_gcn import evaluate_preds
 
 from utilities.data_wrangling import load_cnn_data, to_dataloaders
 from utilities.utils import get_euclidean_adj

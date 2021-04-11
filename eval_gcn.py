@@ -4,12 +4,16 @@ Author: Salva Rühling Cachay
 
 import os
 import torch
-from graphino.GCN.GCN_model import GCN
-from graphino.training import evaluate, get_dataloaders
+import numpy as np
+from sklearn.metrics import mean_squared_error
+
+
 # from utilities.plotting import plot_time_series
-from evaluation.eval import ensemble
+
 
 def reload_all(model_dir, ens_dict, checkpoint_IDs=None, device='cuda'):
+    from graphino.GCN.GCN_model import GCN
+    from graphino.training import evaluate, get_dataloaders
     if checkpoint_IDs is None:
         checkpoint_IDs = ['last']
     try:
@@ -82,8 +86,56 @@ def ensemble_performance(out_dir, verbose=True, device="cuda", num_members=4, ID
         stats = ensemble(Ytrue, *member_preds)
         rmse_ens, cc_ens, cc2a = stats['rmse'], stats['corrcoef'], stats['all_season_cc']
         if verbose:
-            print(f"ENSEMBLE PERFORMANCE {name} -- RMSE: {rmse_ens:.5f}, Corrcoef = {cc_ens:.5f}, All-season-CC={cc2a:.5f}")
+            print(
+                f"ENSEMBLE PERFORMANCE {name} -- RMSE: {rmse_ens:.5f}, Corrcoef = {cc_ens:.5f}, All-season-CC={cc2a:.5f}")
     return member_preds, Ytrue
+
+
+def rmse(y, preds):
+    """
+    :return:  The root-mean-squarred error (RMSE)  value
+    """
+    return np.sqrt(mean_squared_error(y, preds))
+
+
+def evaluate_preds(Ytrue, preds, **kwargs):
+    oni_corr = np.corrcoef(Ytrue, preds)[0, 1]
+    try:
+        rmse_val = rmse(Ytrue, preds)
+    except ValueError as e:
+        print(e)
+        rmse_val = -1
+    # r, p = pearsonr(Ytrue, preds)   # same as using np.corrcoef(y, yhat)[0, 1]
+    oni_stats = {"corrcoef": oni_corr, "rmse": rmse_val}  # , "Pearson_r": r, "Pearson_p": p}
+
+    try:
+        # All season correlation skill = Mean of the corrcoefs for each target season
+        # (whereas the corrcoef above computes it directly on the whole timeseries).
+        predsTS = preds.reshape((-1, 12))
+        YtestTT = Ytrue.reshape((-1, 12))
+        all_season_cc = 0
+        for target_mon in range(12):
+            all_season_cc += np.corrcoef(predsTS[:, target_mon], YtestTT[:, target_mon])[0, 1]
+        all_season_cc /= 12
+        oni_stats['all_season_cc'] = all_season_cc
+    except ValueError:
+        pass
+
+    return oni_stats
+
+
+def ensemble(Ytrue, *args, return_preds=False, **kwargs):
+    members = [mem for mem in args if mem is not None]
+    n_members = len(members)
+    assert n_members > 0, "An ensemble requires at least 1 member"
+    preds = np.zeros(Ytrue.shape)
+    for member in members:
+        preds = preds + member
+    preds = preds / n_members
+    stats = evaluate_preds(Ytrue, preds, **kwargs, return_dict=True)
+    if return_preds:
+        return stats, preds
+    return stats
 
 
 # %%
@@ -91,7 +143,8 @@ def ensemble_performance(out_dir, verbose=True, device="cuda", num_members=4, ID
 if __name__ == '__main__':
     import argparse
     from utilities.utils import set_gpu
-    parser = argparse.ArgumentParser(description='PyTorch ENSO Time series forecasting')
+
+    parser = argparse.ArgumentParser()
     parser.add_argument("--gpu_id", default=2, type=int)
     parser.add_argument("--horizon", default=6, type=int)
     parser.add_argument("--type", default='last', type=str)
