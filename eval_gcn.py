@@ -6,23 +6,28 @@ import os
 import torch
 import numpy as np
 from sklearn.metrics import mean_squared_error
-
-
 # from utilities.plotting import plot_time_series
 
 
-def reload_all(model_dir, ens_dict, checkpoint_IDs=None, device='cuda'):
+def reload_all(model_dir, ens_dict, checkpoint_IDs=None, device='cuda', data_dir='./Data/'):
     from graphino.GCN.GCN_model import GCN
     from graphino.training import evaluate, get_dataloaders
     if checkpoint_IDs is None:
         checkpoint_IDs = ['last']
+
     try:
         model_dict = torch.load(os.path.join(model_dir, 'last_model.pkl'))
-    except FileNotFoundError as e:
-        print(e)
-        return None, ens_dict
+    except FileNotFoundError:
+        try:
+            model_dict = torch.load(os.path.join(model_dir, '50ep_model.pkl'))
+        except FileNotFoundError as e:
+            print(e)
+            return None, ens_dict
+
     params, net_params = model_dict['metadata']['params'], model_dict['metadata']['net_params']
+    params['data_dir'] = data_dir
     print(net_params)
+
     (adj, static_feats, _), (_, valloader, testloader) = get_dataloaders(params, net_params)
     model = GCN(net_params, static_feat=static_feats, adj=adj, verbose=False)
     Y = None
@@ -43,8 +48,8 @@ def reload_all(model_dir, ens_dict, checkpoint_IDs=None, device='cuda'):
 
         _, stats = evaluate(valloader, model, device, return_preds=False)
         _, test_stats, Y, preds = evaluate(testloader, model, device, return_preds=True)
-        print(model_dir.split('/')[-1], ckpt,
-              stats['rmse'], 'TEST:', test_stats['rmse'], test_stats['corrcoef'], test_stats['all_season_cc'])
+        print(model_dir.split('/')[-1], ckpt, "Val. rmse=", stats['rmse'],
+              'TEST:', test_stats['rmse'], "Corrcoef, all-season-corrcoef =", test_stats['corrcoef'], test_stats['all_season_cc'])
         if stats['rmse'] > ens_dict[ckpt][-1][0]:
             print("Skip this one")
             continue
@@ -54,7 +59,7 @@ def reload_all(model_dir, ens_dict, checkpoint_IDs=None, device='cuda'):
     return Y, ens_dict
 
 
-def ensemble_performance(out_dir, verbose=True, device="cuda", num_members=4, ID=None):
+def ensemble_performance(out_dir, verbose=True, device="cuda", num_members=4, checkpoint_IDs=None, ID=None, data_dir='./Data/'):
     """
     :param device:
     :param num_members:
@@ -64,7 +69,8 @@ def ensemble_performance(out_dir, verbose=True, device="cuda", num_members=4, ID
     """
     if not verbose:
         print("This may take a while...")
-    checkpoint_IDs = ['last']
+    if checkpoint_IDs is None:
+        checkpoint_IDs = ['last']
     topK = {name: [(10000, None) for _ in range(num_members)]
             for name in checkpoint_IDs
             }
@@ -75,7 +81,7 @@ def ensemble_performance(out_dir, verbose=True, device="cuda", num_members=4, ID
             print('Skipping this one')
             continue
         mdl_dir = os.path.join(config_dir, fileID)
-        Y, topK = reload_all(mdl_dir, topK, device=device, checkpoint_IDs=checkpoint_IDs)
+        Y, topK = reload_all(mdl_dir, topK, device=device, checkpoint_IDs=checkpoint_IDs, data_dir=data_dir)
         if Y is not None:
             Ytrue = Y
         added = True
@@ -86,8 +92,7 @@ def ensemble_performance(out_dir, verbose=True, device="cuda", num_members=4, ID
         stats = ensemble(Ytrue, *member_preds)
         rmse_ens, cc_ens, cc2a = stats['rmse'], stats['corrcoef'], stats['all_season_cc']
         if verbose:
-            print(
-                f"ENSEMBLE PERFORMANCE {name} -- RMSE: {rmse_ens:.5f}, Corrcoef = {cc_ens:.5f}, All-season-CC={cc2a:.5f}")
+            print(f"ENSEMBLE PERFORMANCE {name} -- RMSE: {rmse_ens:.5f}, Corrcoef = {cc_ens:.5f}, All-season-CC={cc2a:.5f}")
     return member_preds, Ytrue
 
 
@@ -141,16 +146,21 @@ def ensemble(Ytrue, *args, return_preds=False, **kwargs):
 # %%
 
 if __name__ == '__main__':
-    import argparse
+    print("Torch uses CUDA?", torch.cuda.is_available())
     from utilities.utils import set_gpu
+    import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--gpu_id", default=2, type=int)
-    parser.add_argument("--horizon", default=6, type=int)
-    parser.add_argument("--type", default='last', type=str)
     parser.add_argument("--ID", default='', type=str)
+    parser.add_argument("--gpu_id", default=2, type=int)
+    parser.add_argument("--horizon", default=23, type=int)
+    parser.add_argument("--type", default='50ep', type=str)
+    parser.add_argument("--data_dir", default='./Data/', type=str)
     args = parser.parse_args()
     set_gpu(args.gpu_id)
+
     out = f'out/{args.horizon}lead/'
-    # %%
-    ens_members, Y = ensemble_performance(out, verbose=True, num_members=4, ID=args.ID)
+    checkpoint = [args.type]
+    ens_members, Y = ensemble_performance(
+        out, verbose=True, num_members=4, checkpoint_IDs=checkpoint, ID=args.ID, data_dir=args.data_dir
+    )
