@@ -1,0 +1,25 @@
+name: graphino
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - cartopy
+  - cudatoolkit
+  - cython=0.29.21
+  - matplotlib=3.1.2
+  - netCDF4=1.5.4
+  - numpy=1.19.2
+  - numpy-base=1.19.2
+  - pandas=0.25.3
+  - pip=20.3.3
+  - python=3.7
+  - pytorch=1.7.1
+  - qtpy=1.9.0
+  - setuptools=51.3.3
+  - xarray=0.16.1
+  - pip:
+    - networkx
+    - scikit-learn==0.22.2
+    - tensorboard
+    - tqdm

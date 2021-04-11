@@ -1,0 +1,47 @@
+{
+    "params": {
+        "horizon": -1,
+        "window": 3,
+        "lon_min": 0,
+        "lon_max": 360,
+        "lat_min": -55,
+        "lat_max": 60,
+        "model_dir": "out/graphino/",
+        "data_dir": "Data/",
+        "useCMIP5": true,
+        "use_heat_content": true,
+        "seed": 41,
+        "shuffle": true,
+        "epochs": 50,
+        "batch_size": 64,
+        "lr": 0.005,
+        "nesterov": true,
+        "weight_decay": 1e-6,
+        "validation_frac": 0,
+        "validation_set": "SODA",
+        "loss": "MSE",
+        "optimizer": "SGD",
+        "scheduler": "No"
+    },
+
+    "net_params": {
+        "L": 2,
+        "num_nodes": 1345,
+        "readout": "mean",
+        "activation": "ELU",
+        "avg_edges_per_node": 8,
+        "in_dim": 6,
+        "adj_dim": 50,
+        "jumping_knowledge": true,
+        "index_node": true,
+        "batch_norm": true,
+        "mlp_batch_norm": true,
+        "residual": true,
+        "self_loop": true,
+        "tanh_alpha": 0.1,
+        "sig_alpha": 2.0,
+        "dropout": 0.0,
+        "hidden_dim": 250,
+        "out_dim": 250
+    }
+}
