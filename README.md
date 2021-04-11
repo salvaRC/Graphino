@@ -18,9 +18,9 @@ Please follow the instructions in [this file](ENVIRONMENT.md).
 
 All reported models (4 per #lead months) are provided in [the *out* directory](out/).
 To reload them & ensemble them as in the paper (and get the reported all season correlation skills), 
-you may run the [*eval_gcn*](eval_gcn.py) script for a given number of lead months.
+you may run the [*eval_gcn*](eval_gcn.py) script for a given number of lead months/horizon.
 
 ## Running the experiments
 
-Please run the [run_graphino](run_graphino.py) script for the desired number of lead months h in {1,2, .., 23} (the horizon argument).
+Please run the [*run_graphino*](run_graphino.py) script for the desired number of lead months h in {1,2, .., 23} (the horizon argument).
 
