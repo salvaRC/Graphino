@@ -1,5 +1,5 @@
 # The World as a Graph: Improved El Nino Forecasts with Graph Neural Networks 
-[Link to paper](https://arxiv.org/abs/2104.05089) <br>
+[Link to paper](https://arxiv.org/abs/2104.05089) (under review currently) <br>
 *Deep learning-based models have recently outperformed state-of-the-art seasonal forecasting models, such as for predicting 
 El Ni\~no-Southern Oscillation (ENSO). 
 However, current deep learning models are based on convolutional neural networks which are difficult to interpret and can fail to model large-scale atmospheric patterns. In comparison, graph neural networks (GNNs) are capable of modeling large-scale spatial dependencies and are more interpretable due to the explicit modeling of information flow through edge connections.
