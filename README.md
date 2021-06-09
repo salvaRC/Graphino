@@ -27,7 +27,9 @@ you may run the [*eval_gcn*](eval_gcn.py) script for a given number of lead mont
 Please run the [*run_graphino*](run_graphino.py) script for the desired number of lead months h in {1,2, .., 23} (the horizon argument).
 
 ## Eigenvector centrality analysis and Fig. 2
-To produce Figure 2 in our paper, please see [this jupyter notebook](interpretability_plots.ipynb).
+To produce Figure 2 in our paper, i.e.
+a heatmap of eigenvector centrality scores of the nodes for 
+various of our GCN models for different lead times, please see [this jupyter notebook](interpretability_plots.ipynb).
 
 
 ## Citation
