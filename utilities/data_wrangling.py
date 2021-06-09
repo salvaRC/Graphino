@@ -163,7 +163,8 @@ def load_cnn_data(lead_months=3, window=3, use_heat_content=False,
                   truncate_GODAS=True,  # whether to truncate it to the 1984-2017 period the CNN paper used
                   return_new_coordinates=False,
                   return_mask=False,
-                  add_index_node=False, verbose=True, **kwargs
+                  add_index_node=False,
+                  verbose=True, **kwargs
                   ):
     """
 

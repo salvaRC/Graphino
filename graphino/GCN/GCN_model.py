@@ -46,6 +46,12 @@ class GCN(nn.Module):
         if verbose:
             print([x for x in self.layers])
 
+    def get_adj(self):
+        if self.learn_adj:
+            return self.graph_learner.forward()
+        return self.adj
+
+
     def forward(self, input, readout=True):
         if self.learn_adj:
             # Generate an adjacency matrix/connectivity structure for the graph convolutional forward pass

@@ -24,7 +24,7 @@ def init_world_fig(cm=180):
     return fig, ax
 
 
-def plot_centrality_from_adj(adj: np.ndarray, coordinates, lats, lons, format=None, save_to=None, plot_heatmap=True,
+def plot_centrality_from_adj(adj: np.ndarray, lats, lons, coordinates=None, format=None, save_to=None, plot_heatmap=True,
                              set_title=True,
                              min_weight=0.1, show=True, verbose=True, horizon=-1):
     graph = get_graph_from_adj(adj, coordinates, min_weight=min_weight)
@@ -74,8 +74,11 @@ def plot_centrality_from_adj(adj: np.ndarray, coordinates, lats, lons, format=No
 
 def get_graph_from_adj(adj, coordinates, min_weight=0.1, directed=True):
     graph = nx.DiGraph() if directed else nx.Graph()
-    for node, (lat_i, lon_i) in enumerate(coordinates):
-        graph.add_nodes_from([(node, {"latitude": lat_i, "longitude:": lon_i})])  # attributes aren't used
+    if coordinates is not None:
+        for node, (lat_i, lon_i) in enumerate(coordinates):
+            graph.add_nodes_from([(node, {"latitude": lat_i, "longitude:": lon_i})])  # attributes aren't used
+    else:
+        graph.add_nodes_from([(node, {}) for node in range(adj.shape[0])])  # attributes aren't used
 
     rows, cols = np.where(adj > min_weight)
     edges = zip(rows.tolist(), cols.tolist())
