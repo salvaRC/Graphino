@@ -1,0 +1,17 @@
+Model;JFM;FMA;MAM;AMJ;MJJ;JJA;JAS;ASO;SON
+NCEP CFS version 2;0.4;0.5;0.6;0.8;1;1.4;1.6;1.9;
+NASA GMAO model;0.7;0.7;0.7;0.7;0.7;0.7;0.5;;
+Japan Met. Agency model;0.5;0.4;0.4;0.4;0.4;;;;
+Scripps Inst. HCM;0.9;0.8;0.6;0.5;0.5;0.5;0.6;0.6;0.7
+Lamont-Doherty model;0.8;0.8;0.8;1;1.2;1.2;1.2;1.1;1.1
+POAMA (Austr) model;0.4;0.4;0.5;0.6;0.6;0.7;0.7;;
+ECMWF model;0.8;0.7;0.7;0.9;;;;;
+UKMO model;0.3;0;-0.2;-0.1;;;;;
+KMA (Korea) SNU model;0.7;0.7;0.6;0.6;0.6;0.5;0.5;0.4;0.4
+ESSIC Intermed. Coupled model;0.6;0.6;0.6;0.5;0.5;0.4;0.3;0.3;0.2
+COLA CCSM3 model;1.1;1.2;1.2;0.9;0.6;0.3;0;-0.2;-0.5
+MÉTÉO FRANCE model;0.6;0.6;0.7;0.7;0.8;;;;
+CSIR-IRI 3-model MME;0.5;0.4;0.3;0.3;0.2;0.2;;;
+GFDL CM2.1 Coupled Climate model;0.6;0.8;0.9;1;1;0.9;0.6;0.4;0.2
+Canadian Coupled Fcst Sys;0.5;0.5;0.6;0.6;0.7;0.8;0.7;0.6;0.6
+GFDL CM2.5 FLOR Coupled Climate model;0.7;0.8;0.9;0.9;0.9;0.8;0.6;0.5;0.4

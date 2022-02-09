@@ -1,0 +1,9 @@
+Model;JFM;FMA;MAM;AMJ;MJJ;JJA;JAS;ASO;SON
+NCEP/CPC Markov model;0.4;0.4;0.3;0.3;0.3;0.3;0.3;0.4;0.5
+NOAA/CDC Linear Inverse;0.5;0.4;0.2;0.1;0;-0.1;-0.1;-0.1;-0.1
+NCEP/CPC Constructed Analog;0.5;0.3;0.2;0.2;0.2;0.1;0.1;0.1;0.2
+NCEP/CPC Can Cor Anal;0.5;0.4;0.4;0.4;0.3;0.4;0.4;0.4;0.4
+Landsea/Knaff CLIPER;0.5;0.4;0.3;0.2;0.2;0.2;0.2;0.2;0.2
+Univ. BC Neural Network;0.7;0.6;0.6;0.5;0.4;0.4;0.4;0.4;0.4
+FSU Regression;0.6;0.5;0.4;0.4;0.3;0.2;0.2;0.2;0.2
+TCD – UCLA;0.7;0.6;0.4;0.2;0;-0.1;-0.2;-0.2;-0.3
