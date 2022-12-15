@@ -31,7 +31,7 @@ def reload_all(model_dir, ens_dict, checkpoint_IDs=None, device='cuda', data_dir
     print(net_params)
 
     (adj, static_feats, _), (_, valloader, testloader) = get_dataloaders(params, net_params)
-    model = GCN(net_params, static_feat=static_feats, adj=adj, verbose=False)
+    model = GCN(net_params, static_feat=static_feats, adj=adj, verbose=False, device=device)
     Y = None
     for ckpt in checkpoint_IDs:
         try:
