@@ -15,14 +15,16 @@ def reload_all(model_dir, ens_dict, checkpoint_IDs=None, device='cuda', data_dir
     if checkpoint_IDs is None:
         checkpoint_IDs = ['last']
 
+    if os.path.isfile(os.path.join(model_dir, 'last_model.pkl')):
+        mdl_file = os.path.join(model_dir, 'last_model.pkl')
+    else:
+        mdl_file = os.path.join(model_dir, '50ep_model.pkl')
+
     try:
-        model_dict = torch.load(os.path.join(model_dir, 'last_model.pkl'))
-    except FileNotFoundError:
-        try:
-            model_dict = torch.load(os.path.join(model_dir, '50ep_model.pkl'))
-        except FileNotFoundError as e:
-            print(e)
-            return None, ens_dict
+        model_dict = torch.load(mdl_file, map_location=device)
+    except FileNotFoundError as e:
+        print(e)
+        return None, ens_dict
 
     params, net_params = model_dict['metadata']['params'], model_dict['metadata']['net_params']
     params['data_dir'] = data_dir
@@ -146,6 +148,7 @@ def ensemble(Ytrue, *args, return_preds=False, **kwargs):
 # %%
 
 if __name__ == '__main__':
+    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
     print("Torch uses CUDA?", torch.cuda.is_available())
     from utilities.utils import set_gpu
     import argparse
@@ -162,5 +165,7 @@ if __name__ == '__main__':
     out = f'out/{args.horizon}lead/'
     checkpoint = [args.type]
     ens_members, Y = ensemble_performance(
-        out, verbose=True, num_members=4, checkpoint_IDs=checkpoint, ID=args.ID, data_dir=args.data_dir
+        out, verbose=True, num_members=4,
+        device=device,
+        checkpoint_IDs=checkpoint, ID=args.ID, data_dir=args.data_dir
     )
