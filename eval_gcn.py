@@ -35,7 +35,7 @@ def reload_all(model_dir, ens_dict, checkpoint_IDs=None, device='cuda', data_dir
     Y = None
     for ckpt in checkpoint_IDs:
         try:
-            model_dict = torch.load(os.path.join(model_dir, f'{ckpt}_model.pkl'))
+            model_dict = torch.load(os.path.join(model_dir, f'{ckpt}_model.pkl'), map_location=device)
         except FileNotFoundError as e:
             print(e)
             continue
