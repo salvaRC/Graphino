@@ -22,9 +22,10 @@ def cord_mask(data: xa.DataArray, is_flattened=False, flattened_too=False, lat=(
     oni_mask = {'time': slice(None), 'lat': slice(lat[0], lat[1]), 'lon': slice(lon[0], lon[1])}
     if flattened_too:
         flattened = data.copy() if is_flattened else data.stack(cord=['lat', 'lon']).copy()
-        flattened[:, :] = 0
-        flattened.loc[oni_mask] = 1  # Masked (ONI) region has 1 as value
-        flattened_mask = (flattened[0, :] == 1)
+        flattened_mask = ((lat[0] <= flattened.lat) & (flattened.lat <= lat[1]) & (lon[0] <= flattened.lon) & (flattened.lon <= lon[1]))
+        # flattened[:, :] = 0
+        # flattened.loc[oni_mask] = 1  # Masked (ONI) region has 1 as value
+        # flattened_mask = (flattened[0, :] == 1)
         # print(np.count_nonzero(flattened_mask), '<<<<<<<<<<<<<<<<<')
         # flattened.sel(oni_mask) == flattened.loc[:, flattened_mask]
         return oni_mask, flattened_mask
